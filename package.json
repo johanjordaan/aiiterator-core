@@ -1,0 +1,36 @@
+{
+  "name": "aiiterort-core",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "console": "node src/clients/console",
+    "test": "NODE_ENV=test jest --watchAll",
+    "tc": "NODE_ENV=test jest --watchAll --coverage",
+    "coverage": "jest --coverage"
+  },
+  "devDependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4",
+    "jest": "^23.5.0",
+    "nock": "^9.6.1",
+    "nodemon": "^1.18.3",
+    "should": "^13.2.3",
+    "supertest": "^3.3.0"
+  },
+  "dependencies": {
+    "chalk": "^2.4.1",
+    "clear": "^0.1.0",
+    "clui": "^0.3.6",
+    "figlet": "^1.2.0",
+    "immutable": "^3.8.2",
+    "inquirer": "^6.1.0",
+    "lcg-rnd": "^0.0.8",
+    "moment": "^2.22.2",
+    "node-fetch": "^2.2.0",
+    "uuid": "^3.3.2"
+  },
+  "jest": {
+    "rootDir": "src"
+  }
+}
