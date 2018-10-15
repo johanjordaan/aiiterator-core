@@ -17,28 +17,15 @@ const Progress = clui.Progress;
 const Menu = require('./Menu')
 const ActionMenu = require('./ActionMenu')
 
-const { Action } = require('../../Actions')
-
-const Container = require('../../lib/Container')
-const State = require('../../lib/State')
-
-
-const ttt = require('../../examples/tictactoe')
-const modules = [
-  ttt
-]
-const moduleLookup = {}
-moduleLookup[ttt.Info().code] = 0
-let selectedModule = null;
+const { Action } = require('../lib/Actions')
 
 const print = (str) => {
   console.log(str)
 }
 
-
 const clearScreen = () => {
   clear()
-  const welcomeAscii = figlet.textSync('... act now ...', {
+  const welcomeAscii = figlet.textSync('... aiiterator ...', {
       font: 'Standard',
       horizontalLayout: 'default',
       verticalLayout: 'default'
@@ -46,12 +33,6 @@ const clearScreen = () => {
   print(`${chalk.keyword('orange')(welcomeAscii)}`);
 }
 clearScreen()
-
-let state = State.Create()
-try {
-  state = State.Load('stateDump.json')
-} catch(err) {
-}
 
 const commands = {
 
@@ -62,11 +43,6 @@ const commands = {
 
   exit: () => {
     process.exit()
-  },
-
-  dump: () => {
-    State.Dump(state,'stateDump.json')
-    return Promise.resolve()
   },
 
   cu: () => {
@@ -233,8 +209,6 @@ const commands = {
 
   },
 
-
-
   play: () => {
     const currentGame = State.GetSelectedGame(state)
     const currentUser = State.GetSelectedUser(state)
@@ -255,7 +229,6 @@ const commands = {
 
 
 const exitHandler = (options, exitCode) => {
-  commands['dump']()
   if (options.exit) {
     commands['exit']()
   }
@@ -269,9 +242,6 @@ process.on('SIGUSR2', exitHandler.bind(null, {exit:true}));
 
 var p = ''
 const repl = () => {
-  if(State.GetSelectedUser(state)!==null) {
-    p = State.GetSelectedUser(state).get('id')
-  }
   var commandPrompt = {
     type: 'input',
     name: 'command',

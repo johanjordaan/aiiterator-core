@@ -1,7 +1,7 @@
 const _ = require('lodash')
 const inquirer = require('inquirer');
 
-const { Action } = require('../../Actions')
+const { Action } = require('../lib/Actions')
 
 const Show = (items) => {
   const choices = items.map((item)=>{
