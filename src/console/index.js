@@ -18,6 +18,7 @@ const Menu = require('./Menu')
 const ActionMenu = require('./ActionMenu')
 
 const { Action } = require('../lib/Actions')
+const serverClient = require('../lib/Clients').serverClient.init('http://localhost:3000')
 
 const print = (str) => {
   console.log(str)
@@ -34,6 +35,7 @@ const clearScreen = () => {
 }
 clearScreen()
 
+let token = null
 const commands = {
 
   cls: () => {
@@ -44,6 +46,42 @@ const commands = {
   exit: () => {
     process.exit()
   },
+
+  login: async () => {
+    const input = await inquirer.prompt([
+      { type: 'string', name: 'email', message: 'email'},
+      { type: 'password', name: 'password', message: 'password'},
+    ])
+    const result = await serverClient.login(input.email,input.password)
+    if(result.error) {
+      print(result.error)
+    } else {
+      token = result
+    }
+
+  },
+
+  cp: async () => {
+    const input = await inquirer.prompt([
+      { type: 'string', name: 'name', message: 'name'},
+    ])
+    const result = await serverClient.createPlayer(input.name,token)
+    if(result.error) {
+      print(result.error)
+    } else {
+      print(result.id)
+    }
+  },
+
+  lp: async () => {
+    const result = await serverClient.listAllPlayers(token)
+    if(result.error) {
+      print(result.error)
+    } else {
+      _.each(result,print)
+    }
+  },
+
 
   cu: () => {
     return inquirer
@@ -252,7 +290,12 @@ const repl = () => {
     .prompt([commandPrompt])
     .then(answer => {
       if(answer.command in commands) {
-        commands[answer.command]().then(repl)
+        try {
+          commands[answer.command]().then(repl)
+        } catch(err) {
+          print(err)
+          repl()
+        }
       } else {
         repl()
       }

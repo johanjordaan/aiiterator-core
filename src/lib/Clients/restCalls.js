@@ -3,35 +3,73 @@ const fetch = require('node-fetch')
 const request  = require('supertest')
 
 const GET = (base,url,token) => {
-  return fetch(base+url, { method: 'GET'})
-  .then(result => result.json())
-  .catch((err) => {
-    throw new Error(err)
+  return fetch(base+url, {
+    method: 'GET',
+    headers:{
+      'Content-Type': 'application/json',
+      'Authorization': token,
+    }
   })
+  .then(result => {
+    if(result.status>=400) {
+      return Promise.reject(result.status)
+    } else
+    return result
+  })
+  .then(result => result.json())
 }
 
 const POST = (base, url, body, token) => {
-  return fetch(base+url, { method: 'POST', body:JSON.stringify(body)})
-  .then(result => result.json())
-  .catch((err) => {
-    throw new Error(`${url} - ${err}`)
+  return fetch(base+url, {
+    method: 'POST',
+    body:JSON.stringify(body),
+    headers:{
+      'Content-Type': 'application/json',
+      'Authorization': token,
+    }
   })
+  .then(result => {
+    if(result.status>=400) {
+      return Promise.reject(result.status)
+    } else
+    return result
+  })
+  .then(result => result.json())
 }
 
 const PUT = (base, url, body, token) => {
-  return fetch(base+url, { method: 'PUT', body:JSON.stringify(body)})
-  .then(result => result.json())
-  .catch((err) => {
-    throw new Error(err)
+  return fetch(base+url, {
+    method: 'PUT',
+    body:JSON.stringify(body),
+    headers:{
+      'Content-Type': 'application/json',
+      'Authorization': token,
+    }
   })
+  .then(result => {
+    if(result.status>=400) {
+      return Promise.reject(result.status)
+    } else
+    return result
+  })
+  .then(result => result.json())
 }
 
 const DELETE = (base, url, body, token) => {
-  return fetch(base+url, { method: 'DELETE'})
-  .then(result => result.json())
-  .catch((err) => {
-    throw new Error(err)
+  return fetch(base+url, {
+    method: 'DELETE',
+    headers:{
+      'Content-Type': 'application/json',
+      'Authorization': token,
+    }
   })
+  .then(result => {
+    if(result.status>=400) {
+      return Promise.reject(result.status)
+    } else
+    return result
+  })
+  .then(result => result.json())
 }
 
 const TEST_GET = (app,url, token) => {
