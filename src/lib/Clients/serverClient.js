@@ -3,6 +3,15 @@
 const init = (host,app) => {
   const restServer = require('./restCalls').init(host||'https://api.aiiterator.com',app)
 
+  const register = async (email, password) => {
+    try {
+      const result = await restServer.POST('/auth/register',{email,password},'')
+      return result
+    } catch(error) {
+      return { error }
+    }
+  }
+
   const login = async (email, password) => {
     try {
       const result = await restServer.POST('/auth/login',{email,password},'')
@@ -25,6 +34,16 @@ const init = (host,app) => {
     try {
       const result = await restServer.GET('/players/',token)
       return result.players
+    } catch(error) {
+      return { error }
+    }
+  }
+
+
+  const become = async (playerId,token) => {
+    try {
+      const result = await restServer.POST('/auth/login',{email,password},'')
+      return result.token
     } catch(error) {
       return { error }
     }
@@ -75,6 +94,7 @@ const init = (host,app) => {
   }
 
   return {
+    register,
     login,
     createPlayer,
     listAllPlayers,

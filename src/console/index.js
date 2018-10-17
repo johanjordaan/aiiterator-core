@@ -1,18 +1,19 @@
 const _ = require('lodash')
-const uuidv4 = require('uuid/v4');
+const fs = require('fs')
+const uuidv4 = require('uuid/v4')
 const {
   Map,
   List,
 } = require('immutable')
 
-const inquirer = require('inquirer');
+const inquirer = require('inquirer')
 
 const clear = require('clear')
 const chalk = require('chalk')
 const figlet = require('figlet')
 const clui = require('clui')
-const Gauge = clui.Gauge;
-const Progress = clui.Progress;
+const Gauge = clui.Gauge
+const Progress = clui.Progress
 
 const Menu = require('./Menu')
 const ActionMenu = require('./ActionMenu')
@@ -35,7 +36,29 @@ const clearScreen = () => {
 }
 clearScreen()
 
-let token = null
+const dumpState = (state) => {
+  fs.writeFileSync('./state.json',JSON.stringify(state))
+}
+const loadState = () => {
+  const defaultState = {
+    users: {},
+    currentUser: null
+  }
+
+  try {
+    const stats = fs.lstatSync('./state.json');
+    if(!stats.isFile()) {
+      return defaultState
+    } else {
+      return JSON.parse(fs.readFileSync('./state.json'))
+    }
+  } catch(err) {
+    return defaultState
+  }
+}
+
+const state = loadState()
+console.log(state)
 const commands = {
 
   cls: () => {
@@ -44,7 +67,29 @@ const commands = {
   },
 
   exit: () => {
+    dumpState(state)
     process.exit()
+  },
+
+  register: async () => {
+    const input = await inquirer.prompt([
+      { type: 'string', name: 'email', message: 'email'},
+      { type: 'password', name: 'password', message: 'password'},
+      { type: 'password', name: 'password_confirm', message: 'password'},
+    ])
+    if(input.password !== input.password_confirm) {
+      print(`passwords don't match`)
+      return
+    }
+    const result = await serverClient.register(input.email,input.password)
+    if(result.error) {
+      print(result.error)
+    } else {
+      state.users[input.email] = { token:result }
+      state.currentUser = input.email
+      dumpState(state)
+      print(result)
+    }
   },
 
   login: async () => {
@@ -56,7 +101,9 @@ const commands = {
     if(result.error) {
       print(result.error)
     } else {
-      token = result
+      state.users[input.email] = { token:result }
+      state.currentUser = input.email
+      dumpState(state)
     }
 
   },
@@ -65,7 +112,7 @@ const commands = {
     const input = await inquirer.prompt([
       { type: 'string', name: 'name', message: 'name'},
     ])
-    const result = await serverClient.createPlayer(input.name,token)
+    const result = await serverClient.createPlayer(input.name,state.users[state.currentUser].token)
     if(result.error) {
       print(result.error)
     } else {
@@ -74,7 +121,7 @@ const commands = {
   },
 
   lp: async () => {
-    const result = await serverClient.listAllPlayers(token)
+    const result = await serverClient.listAllPlayers(state.users[state.currentUser].token)
     if(result.error) {
       print(result.error)
     } else {
@@ -83,21 +130,12 @@ const commands = {
   },
 
 
-  cu: () => {
-    return inquirer
-      .prompt({
-        type: 'string',
-        name: 'newUserName',
-        message: 'name',
-      })
-      .then((resp)=> {
-        if(resp.newUserName !== '' ) {
-          const newUser = Map({id:resp.newUserName,name:resp.newUserName})
-          state = State.AddUser(state,newUser)
-          state = State.SetSelectedUser(state, resp.newUserName)
-        }
-      })
-  },
+  become: async () => {
+    
+  }
+
+
+
 
   su: () => {
     const options = _.filter(State.GetUsers(state).toJS(),(user)=>{
@@ -297,6 +335,7 @@ const repl = () => {
           repl()
         }
       } else {
+        print(`unknown command [${answer.command}]`)
         repl()
       }
     });
