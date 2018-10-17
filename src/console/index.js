@@ -131,9 +131,27 @@ const commands = {
 
 
   become: async () => {
-    
-  }
+    const input = await inquirer.prompt([
+      { type: 'string', name: 'playerId', message: 'playerId'},
+    ])
+    const result = await serverClient.become(input.playerId,state.users[state.currentUser].token)
+    if(result.error) {
+      print(result.error)
+    } else {
+      state.users[input.email] = { token:result }
+      state.currentUser = input.email
+      dumpState(state)
+    }
+  },
 
+  whoami: async () => {
+    const result = await serverClient.whoami(state.users[state.currentUser].token)
+    if(result.error) {
+      print(result.error)
+    } else {
+      print(result)
+    }
+  },
 
 
 
@@ -149,16 +167,6 @@ const commands = {
           return Promise.resolve()
         }
       })
-  },
-
-  whoami: () => {
-    const user = State.GetSelectedUser(state)
-    if(user===null) {
-      print('No users')
-    } else {
-      print(user.get('name'))
-    }
-    return Promise.resolve()
   },
 
   start: () => {

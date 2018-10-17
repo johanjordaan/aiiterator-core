@@ -42,8 +42,17 @@ const init = (host,app) => {
 
   const become = async (playerId,token) => {
     try {
-      const result = await restServer.POST('/auth/login',{email,password},'')
+      const result = await restServer.POST('/auth/become',{playerId},token)
       return result.token
+    } catch(error) {
+      return { error }
+    }
+  }
+
+  const whoami = async (token) => {
+    try {
+      const result = await restServer.GET('/auth/whoami',token)
+      return result
     } catch(error) {
       return { error }
     }
@@ -52,11 +61,6 @@ const init = (host,app) => {
   const listMyPlayers = async (token) => {
     const result = await restServer.GET('/players/?mine',token)
     return result.players
-  }
-
-  const become = async (playerId,token) => {
-    const result = await restServer.POST('/auth/become',{playerId},token)
-    return result.token
   }
 
   const loginAndBecome = async (email, password, playerId) => {
@@ -100,6 +104,7 @@ const init = (host,app) => {
     listAllPlayers,
     listMyPlayers,
     become,
+    whoami,
     loginAndBecome,
     listAllPools,
     listMyPools,
