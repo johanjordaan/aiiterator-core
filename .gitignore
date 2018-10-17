@@ -4,3 +4,4 @@ coverage
 
 yarn-error.log
 error.log
+state.json

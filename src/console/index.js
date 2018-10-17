@@ -19,7 +19,7 @@ const Menu = require('./Menu')
 const ActionMenu = require('./ActionMenu')
 
 const { Action } = require('../lib/Actions')
-const serverClient = require('../lib/Clients').serverClient.init('http://localhost:3000')
+const serverClient = require('../lib/Clients').serverClient.init('http://localhost:6660')
 
 const print = (str) => {
   console.log(str)
@@ -151,22 +151,6 @@ const commands = {
     } else {
       print(result)
     }
-  },
-
-
-
-  su: () => {
-    const options = _.filter(State.GetUsers(state).toJS(),(user)=>{
-      return user.id !== State.GetSelectedUser(state).get('id')
-    })
-
-    return Menu.Show("whom?","name",options)
-      .then((selection)=>{
-        if(!_.isString(selection)) {
-          state = State.SetSelectedUser(state, selection.id)
-          return Promise.resolve()
-        }
-      })
   },
 
   start: () => {
