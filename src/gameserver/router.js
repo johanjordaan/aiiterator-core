@@ -19,11 +19,11 @@ const createRetVal = (module, state) => {
 }
 
 const init = (config) => {
-  const gameservers = _.map(config.paths,(p)=>{
+  const gameservers = _.fromPairs(_.map(config.paths,(p)=>{
     const module = require(path.resolve(p))
     console.log(`Loaded [${module.Info().name}]`)
     return [module.Info().code,module]
-  })
+  }))
 
   const router = express.Router()
 

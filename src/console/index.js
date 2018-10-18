@@ -58,7 +58,6 @@ const loadState = () => {
 }
 
 const state = loadState()
-console.log(state)
 const commands = {
 
   cls: () => {
@@ -120,16 +119,6 @@ const commands = {
     }
   },
 
-  lp: async () => {
-    const result = await serverClient.listAllPlayers(state.users[state.currentUser].token)
-    if(result.error) {
-      print(result.error)
-    } else {
-      _.each(result,print)
-    }
-  },
-
-
   become: async () => {
     const input = await inquirer.prompt([
       { type: 'string', name: 'playerId', message: 'playerId'},
@@ -152,6 +141,20 @@ const commands = {
       print(result)
     }
   },
+
+  ls: async (what) => {
+    let result = { error: `unknown parameter to ls [${what}]`}
+    if(what === 'players') {
+      result = await serverClient.listAllPlayers(state.users[state.currentUser].token)
+    }
+
+    if(result.error) {
+      print(result.error)
+    } else {
+      _.each(result,print)
+    }
+  },
+
 
   start: () => {
     if(State.GetSelectedUser(state) === null) {
@@ -319,9 +322,10 @@ const repl = () => {
   inquirer
     .prompt([commandPrompt])
     .then(answer => {
-      if(answer.command in commands) {
+      const tokens = _.map(_.filter(answer.command.split(/\W/),(i)=>i.length>0),(i)=>i.trim())
+      if(tokens[0] in commands) {
         try {
-          commands[answer.command]().then(repl)
+          commands[tokens[0]](tokens[1]).then(repl)
         } catch(err) {
           print(err)
           repl()
