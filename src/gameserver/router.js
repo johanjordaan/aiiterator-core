@@ -29,13 +29,23 @@ const init = (config) => {
 
   /// List the modules in this server
   //
-  router.get('/', (req, res) => {
-    res.json(_.keys(gameservers))
+  router.get('/:code', (req, res) => {
+    const module = gameservers[req.params.code]
+    if(module === undefined) { res.status(404).send(); return; }
+
+    res.json(module.Info())
+  })
+
+  /// List the game info
+  //
+  router.get('/:code/info', (req, res) => {
+    const module = gameservers[req.params.code]
+    if(module === undefined) { res.status(404).send(); return; }
+
+    res.json(module.Info())
   })
 
 
-  /// List the modules in this server
-  //
   router.get('/:code/info', (req, res) => {
     const module = gameservers[req.params.code]
     if(module === undefined) { res.status(404).send(); return; }

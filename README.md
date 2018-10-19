@@ -1,1 +1,5 @@
-yarn add ../aiiterator-core
+# aiiterator-core
+
+## install
+
+```yarn add aiiterator-core```
