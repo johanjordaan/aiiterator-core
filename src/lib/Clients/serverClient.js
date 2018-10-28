@@ -58,9 +58,22 @@ const init = (host,app) => {
     }
   }
 
-  const listMyPlayers = async (token) => {
-    const result = await restServer.GET('/players/?mine',token)
-    return result.players
+  const listAllGameServers = async (token) => {
+    try {
+      const result = await restServer.GET('/gameservers/',token)
+      return result.gameservers
+    } catch(error) {
+      return { error }
+    }
+  }
+
+  const listAllGameTypes = async (token) => {
+    try {
+      const result = await restServer.GET('/gametypes/',token)
+      return result.gametypes
+    } catch(error) {
+      return { error }
+    }
   }
 
   const loginAndBecome = async (email, password, playerId) => {
@@ -68,19 +81,36 @@ const init = (host,app) => {
   }
 
   const listAllPools = async (token) => {
-    const result = await restServer.GET('/pools/',token)
-    return result.pools
+    try {
+      const result = await restServer.GET('/pools/',token)
+      return result.pools
+    } catch(error) {
+      return { error }
+    }
   }
+
+  const joinPool = async (poolId,token) => {
+    try {
+      const result = await restServer.PUT(`/pools/${poolId}/join`,{},token)
+      return result
+    } catch(error) {
+      return { error }
+    }
+  }
+
+
+
+  const listMyPlayers = async (token) => {
+    const result = await restServer.GET('/players/?mine',token)
+    return result.players
+  }
+
 
   const listMyPools = async (token) => {
     const result = await restServer.GET('/pools/?mine',token)
     return result.pools
   }
 
-  const joinPool = async (poolId,token) => {
-    const result = await restServer.PUT(`/pools/${poolId}/join`,{},token)
-    return result
-  }
 
   const listActiveGames = async (token) => {
     const result = await restServer.GET(`/games`,token)
@@ -105,6 +135,8 @@ const init = (host,app) => {
     listMyPlayers,
     become,
     whoami,
+    listAllGameServers,
+    listAllGameTypes,
     loginAndBecome,
     listAllPools,
     listMyPools,

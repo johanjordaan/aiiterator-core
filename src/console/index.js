@@ -107,11 +107,15 @@ const commands = {
 
   },
 
-  cp: async () => {
-    const input = await inquirer.prompt([
-      { type: 'string', name: 'name', message: 'name'},
-    ])
-    const result = await serverClient.createPlayer(input.name,state.users[state.currentUser].token)
+  create: async (what) => {
+    let result = { error: `unknown parameter to create [${what}] should be one of ('player')`}
+    if(what === 'player') {
+      const input = await inquirer.prompt([
+        { type: 'string', name: 'name', message: 'name'},
+      ])
+      result = await serverClient.createPlayer(input.name,state.users[state.currentUser].token)
+    }
+
     if(result.error) {
       print(result.error)
     } else {
@@ -143,10 +147,23 @@ const commands = {
   },
 
   ls: async (what) => {
-    let result = { error: `unknown parameter to ls [${what}]`}
+    let result = { error: `unknown parameter to ls [${what}] should be one of ('players','gameservers','gametypes','pools','games')`}
     if(what === 'players') {
       result = await serverClient.listAllPlayers(state.users[state.currentUser].token)
     }
+    if(what === 'gameservers') {
+      result = await serverClient.listAllGameServers(state.users[state.currentUser].token)
+    }
+    if(what === 'gametypes') {
+      result = await serverClient.listAllGameTypes(state.users[state.currentUser].token)
+    }
+    if(what === 'pools') {
+      result = await serverClient.listAllPools(state.users[state.currentUser].token)
+    }
+    if(what === 'games') {
+      result = await serverClient.listActiveGames(state.users[state.currentUser].token)
+    }
+
 
     if(result.error) {
       print(result.error)
@@ -155,7 +172,19 @@ const commands = {
     }
   },
 
+  join : async () => {
+    const input = await inquirer.prompt([
+      { type: 'string', name: 'poolId', message: 'poolId'},
+    ])
+    const result = await serverClient.joinPool(input.poolId,state.users[state.currentUser].token)
+    if(result.error) {
+      print(result.error)
+    } else {
+      print(result)
+    }
+  },
 
+////////////////////////////////////////////////////////////////////////////////
   start: () => {
     if(State.GetSelectedUser(state) === null) {
       print("Please select a user first")
@@ -170,38 +199,6 @@ const commands = {
             state = State.AddGame(state,game)
             state = State.SetSelectedGame(state, game.get('id'))
           }
-        })
-    }
-  },
-
-  join: () => {
-    if(state.selectedUser === null) {
-      print("Please select a user first")
-      return Promise.resolve()
-    } else {
-      const user = State.GetSelectedUser(state)
-      return Menu.Show("which?",(m)=>m.Info().name,modules)
-        .then((gameEngine)=>{
-
-          const games = State.GetGames(state)
-          const options = games.filter((game)=>{
-            return ttt.HasOpenSlots(game.get('state'))
-          }).map((game)=>{
-            return {
-              id:game.get('id'),
-              value:ttt.ToSlug(game.get('state')),
-            }
-          }).toJS()
-          return Menu.Show("which?",'value',options)
-            .then((gameToJoin)=>{
-              if(!_.isString(gameToJoin)) {
-                const gameState = Container.GetItem(state.get('games'),gameToJoin.id)
-                const game = gameEngine.Join(gameState.get('state'),user.get('id'))
-                const newGameState = gameState.set('state',game)
-                state = State.UpdateGame(state,newGameState)
-                state = State.SetSelectedGame(state, newGameState.get('id'))
-              }
-          })
         })
     }
   },
