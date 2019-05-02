@@ -1,0 +1,7 @@
+{
+  "modules":[
+    {"path":"../aiiterator-game-ttt", "code":""},
+    {"path":"../aiiterator-game-ttt", "code":"ttt2"},
+    {"path":"../aiiterator-game-ttt"}
+  ]
+}

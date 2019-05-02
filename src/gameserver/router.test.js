@@ -1,30 +1,32 @@
+const fs = require('fs')
 const should = require('should')
 const request  = require('supertest')
 
 const Actions = require('../lib/Actions')
 
-const { app } = require('./index')
+const config = JSON.parse(fs.readFileSync(__dirname+'/../testfixtures/gameserver.json','utf8'))
+const app = require('./index').init(config)
 
 
 describe("gameservers router",()=>{
-  describe('GET /', () => {
+  describe('GET /modules', () => {
     it('should return the list of game modules on this server', (done) => {
       request(app)
-        .get('/')
+        .get('/modules')
         .expect('Content-Type', /json/)
         .expect(200)
         .end((err, res) => {
           if (err) return done(err)
-          res.body.should.eql(['ttt'])
+          res.body.should.eql(['ttt','ttt2','ttt'])
           done()
         })
     })
   })
 
-  describe('GET /:code/info', () => {
+  describe('GET /:code', () => {
     it('should return info for the relevant code', (done) => {
       request(app)
-        .get('/ttt/info')
+        .get('/ttt')
         .expect('Content-Type', /json/)
         .expect(200)
         .end((err, res) => {
@@ -43,7 +45,7 @@ describe("gameservers router",()=>{
 
     it('should return 404 for an unknown code', (done) => {
       request(app)
-        .get('/info/asdfqwkjb2il34h')
+        .get('/aasdadsf')
         .expect(404,done)
     })
 

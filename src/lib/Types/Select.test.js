@@ -33,4 +33,10 @@ describe('xxx',()=>{
 		Select.Validate(3,def).should.equal(false)
 	})
 
+  it('should allow duplicxate selection',()=>{
+		const def = Select.CreateDef([1,2,3],2,2,true)
+		Select.Validate([2,2],def).should.equal(true)
+	})
+
+
 })

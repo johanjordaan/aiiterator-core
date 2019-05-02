@@ -61,6 +61,14 @@ describe('Types',()=>{
         parameter.length.should.eql(1)
       })
 
+      it('should create a select parameter',()=>{
+        const parameterDef = Types.Select.CreateDef(['b','b','b','b','b','b'],2,2,true)
+        const parameter = Types.TypeTools.CreateParameter(parameterDef)
+
+        parameter.length.should.eql(2)
+      })
+
+
 
       it('should throw an error if an invalid type def is supplied',()=>{
         const f = () => {

@@ -41,7 +41,7 @@ const startServer = () => {
 
 /* istanbul ignore next */
 if (require.main === module) {
-  let config = { paths: []}
+  let config = { modules: []}
   try {
     config = JSON.parse(fs.readFileSync(process.argv[2],'utf8'))
   } catch(err) {

@@ -19,90 +19,66 @@ const createRetVal = (module, state) => {
 }
 
 const init = (config) => {
-  const gameservers = _.fromPairs(_.map(config.paths,(p)=>{
-    const module = require(path.resolve(p))
-    console.log(`Loaded [${module.Info().name}]`)
-    return [module.Info().code,module]
-  }))
-
   const router = express.Router()
 
-  /// List the modules in this server
-  //
-  router.get('/:code', (req, res) => {
-    const module = gameservers[req.params.code]
-    if(module === undefined) { res.status(404).send(); return; }
+  const modules = _.map(config.modules,(module)=>{
+    const moduleCode = require(path.resolve(module.path))
+    console.log(`Loaded [${moduleCode.Info().name}]`)
 
-    res.json(module.Info())
+    const codePrefix = module.code===""?"/":"/"+(module.code||moduleCode.Info().code)
+
+    router.get(`${codePrefix}`, (req, res) => {
+      res.json(moduleCode.Info())
+    })
+
+    // Post the initial game config
+    // Returns an initial gamestate
+    router.post(`${codePrefix}/init`, (req, res) => {
+      const seed = req.body.seed || null
+      const config = req.body.config || {}
+      const playerIds = req.body.playerIds || []
+
+      const state = _.reduce(playerIds,(currentState,playerId)=>{
+        return moduleCode.Join(currentState,playerId)
+      }, moduleCode.Init(seed,config))
+
+      res.json(createRetVal(moduleCode,state))
+    })
+
+    // Post a game state .... as well as the user to join and initial config?
+    // Retryrns a new gamne state
+    router.post(`${codePrefix}/join`, (req, res) => {
+      const currentState = req.body.state
+      if(currentState === undefined) { res.status(400).json({message:'undefined state'}); return; }
+
+      const playerId = req.body.playerId
+      if(playerId === undefined) { res.status(400).json({message:'undefined playerId'}); return; }
+
+      const newState = moduleCode.Join(fromJS(currentState), playerId)
+      res.json(createRetVal(moduleCode,newState))
+    })
+
+    // Post a game state and a ordered array of actions
+    // Returns a new game state
+    router.post(`${codePrefix}/nextstate`, (req, res) => {
+      const state = req.body.state
+      if(state === undefined) { res.status(400).json({message:'undefined state'}); return; }
+
+      const actions = req.body.actions
+      if(actions === undefined) { res.status(400).json({message:'undefined actions'}); return; }
+
+      const newState = _.reduce(actions,(currentState,action)=>{
+        return moduleCode.GetNextState(currentState,action.playerId,action.action)
+      }, fromJS(state))
+
+      res.json(createRetVal(moduleCode,newState))
+    })
+
+    return module.code||moduleCode.Info().code
   })
 
-  /// List the game info
-  //
-  router.get('/:code/info', (req, res) => {
-    const module = gameservers[req.params.code]
-    if(module === undefined) { res.status(404).send(); return; }
-
-    res.json(module.Info())
-  })
-
-
-  router.get('/:code/info', (req, res) => {
-    const module = gameservers[req.params.code]
-    if(module === undefined) { res.status(404).send(); return; }
-
-    res.json(module.Info())
-  })
-
-  // Post the initial game config
-  // Returns an initial gamestate
-  router.post('/:code/init', (req, res) => {
-    const module = gameservers[req.params.code]
-    if(module === undefined) { res.status(404).send(); return; }
-
-    const seed = req.body.seed || null
-    const config = req.body.config || {}
-    const playerIds = req.body.playerIds || []
-
-    const state = _.reduce(playerIds,(currentState,playerId)=>{
-      return module.Join(currentState,playerId)
-    }, module.Init(seed,config))
-
-    res.json(createRetVal(module,state))
-  })
-
-  // Post a game state .... as well as the user to join and initial config?
-  // Retryrns a new gamne state
-  router.post('/:code/join', (req, res) => {
-    const module = gameservers[req.params.code]
-    if(module === undefined) { res.status(404).send(); return; }
-
-    const currentState = req.body.state
-    if(currentState === undefined) { res.status(400).json({message:'undefined state'}); return; }
-
-    const playerId = req.body.playerId
-    if(playerId === undefined) { res.status(400).json({message:'undefined playerId'}); return; }
-
-    const newState = module.Join(fromJS(currentState), playerId)
-    res.json(createRetVal(module,newState))
-  })
-
-  // Post a game state and a ordered array of actions
-  // Returns a new game state
-  router.post('/:code/nextstate', (req, res) => {
-    const module = gameservers[req.params.code]
-    if(module === undefined) { res.status(404).send(); return; }
-
-    const state = req.body.state
-    if(state === undefined) { res.status(400).json({message:'undefined state'}); return; }
-
-    const actions = req.body.actions
-    if(actions === undefined) { res.status(400).json({message:'undefined actions'}); return; }
-
-    const newState = _.reduce(actions,(currentState,action)=>{
-      return module.GetNextState(currentState,action.playerId,action.action)
-    }, fromJS(state))
-
-    res.json(createRetVal(module,newState))
+  router.get('/modules', (req, res) => {
+    res.json(modules)
   })
 
   return router
