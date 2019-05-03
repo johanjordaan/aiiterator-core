@@ -5,9 +5,9 @@
   "license": "MIT",
   "scripts": {
     "console": "node src/clients/console",
-    "test": "NODE_ENV=test jest --watchAll",
-    "tc": "NODE_ENV=test jest --watchAll --coverage",
-    "coverage": "jest --coverage"
+    "test": "cross-env NODE_ENV=test jest --watchAll",
+    "tc": "cross-env NODE_ENV=test jest --watchAll --coverage",
+    "coverage": "cross-env NODE_ENV=test jest --coverage"
   },
   "devDependencies": {
     "body-parser": "^1.18.3",
@@ -22,10 +22,12 @@
     "chalk": "^2.4.1",
     "clear": "^0.1.0",
     "clui": "^0.3.6",
+    "cross-env": "^5.2.0",
     "figlet": "^1.2.0",
     "immutable": "^3.8.2",
     "inquirer": "^6.1.0",
     "lcg-rnd": "^0.0.8",
+    "lodash": "^4.17.11",
     "moment": "^2.22.2",
     "node-fetch": "^2.2.0",
     "uuid": "^3.3.2"

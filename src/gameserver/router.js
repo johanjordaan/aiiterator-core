@@ -80,6 +80,9 @@ const init = (config) => {
   router.get('/modules', (req, res) => {
     res.json(modules)
   })
+  router.get('/info', (req, res) => {
+    res.json(config.info)
+  })
 
   return router
 }

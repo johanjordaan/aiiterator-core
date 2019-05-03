@@ -9,6 +9,23 @@ const app = require('./index').init(config)
 
 
 describe("gameservers router",()=>{
+  describe('GET /info', () => {
+    it('should return the server info', (done) => {
+      request(app)
+        .get('/info')
+        .expect('Content-Type', /json/)
+        .expect(200)
+        .end((err, res) => {
+          if (err) return done(err)
+          res.body.should.eql({
+            "GIT_SHA":"xxxxx"
+          })
+          done()
+        })
+    })
+  })
+
+
   describe('GET /modules', () => {
     it('should return the list of game modules on this server', (done) => {
       request(app)

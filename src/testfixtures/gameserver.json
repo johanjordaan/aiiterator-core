@@ -1,4 +1,7 @@
 {
+  "info":{
+    "GIT_SHA":"xxxxx"
+  },
   "modules":[
     {"path":"../aiiterator-game-ttt", "code":""},
     {"path":"../aiiterator-game-ttt", "code":"ttt2"},
