@@ -3,8 +3,8 @@
     "GIT_SHA":"xxxxx"
   },
   "modules":[
-    {"path":"../aiiterator-game-ttt", "code":""},
-    {"path":"../aiiterator-game-ttt", "code":"ttt2"},
-    {"path":"../aiiterator-game-ttt"}
+    {"path":"./node_modules/aiiterator-game-ttt", "code":""},
+    {"path":"./node_modules/aiiterator-game-ttt", "code":"ttt2"},
+    {"path":"./node_modules/aiiterator-game-ttt"}
   ]
 }

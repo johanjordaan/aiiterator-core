@@ -10,6 +10,7 @@
     "coverage": "cross-env NODE_ENV=test jest --coverage"
   },
   "devDependencies": {
+    "aiiterator-game-ttt": "https://github.com/johanjordaan/aiiterator-game-ttt",
     "body-parser": "^1.18.3",
     "express": "^4.16.4",
     "jest": "^23.5.0",
