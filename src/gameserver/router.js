@@ -23,7 +23,7 @@ const init = (config) => {
 
   const modules = _.map(config.modules,(module)=>{
     const moduleCode = require(path.resolve(module.path))
-    console.log(`Loaded [${moduleCode.Info().name}]`)
+    //console.log(`Loaded [${moduleCode.Info().name}]`)
 
     const codePrefix = module.code===""?"/":"/"+(module.code||moduleCode.Info().code)
 
