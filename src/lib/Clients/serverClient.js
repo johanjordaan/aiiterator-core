@@ -1,11 +1,12 @@
 
 
 const init = (host,app) => {
-  const restServer = require('./restCalls').init(host||'https://api.aiiterator.com',app)
+  const base = host||'https://api.aiiterator.com'
+  const restServer = require('./restCalls').init(app)
 
   const register = async (email, password) => {
     try {
-      const result = await restServer.POST('/auth/register',{email,password},'')
+      const result = await restServer.POST(base,'/auth/register',{email,password},'')
       return result
     } catch(error) {
       return { error }
@@ -14,7 +15,7 @@ const init = (host,app) => {
 
   const login = async (email, password) => {
     try {
-      const result = await restServer.POST('/auth/login',{email,password},'')
+      const result = await restServer.POST(base,'/auth/login',{email,password},'')
       return result.token
     } catch(error) {
       return { error }
@@ -23,7 +24,7 @@ const init = (host,app) => {
 
   const createPlayer = async (name, token) => {
     try {
-      const result = await restServer.POST('/players/',{name},token)
+      const result = await restServer.POST(base,'/players/',{name},token)
       return result.newPlayer
     } catch(error) {
       return { error }
@@ -32,7 +33,7 @@ const init = (host,app) => {
 
   const listAllPlayers = async (token) => {
     try {
-      const result = await restServer.GET('/players/',token)
+      const result = await restServer.GET(base,'/players/',token)
       return result.players
     } catch(error) {
       return { error }
@@ -42,7 +43,7 @@ const init = (host,app) => {
 
   const become = async (playerId,token) => {
     try {
-      const result = await restServer.POST('/auth/become',{playerId},token)
+      const result = await restServer.POST(base,'/auth/become',{playerId},token)
       return result.token
     } catch(error) {
       return { error }
@@ -51,7 +52,7 @@ const init = (host,app) => {
 
   const whoami = async (token) => {
     try {
-      const result = await restServer.GET('/auth/whoami',token)
+      const result = await restServer.GET(base,'/auth/whoami',token)
       return result
     } catch(error) {
       return { error }
@@ -60,7 +61,7 @@ const init = (host,app) => {
 
   const listAllGameServers = async (token) => {
     try {
-      const result = await restServer.GET('/gameservers/',token)
+      const result = await restServer.GET(base,'/gameservers/',token)
       return result.gameservers
     } catch(error) {
       return { error }
@@ -69,7 +70,7 @@ const init = (host,app) => {
 
   const listAllGameTypes = async (token) => {
     try {
-      const result = await restServer.GET('/gametypes/',token)
+      const result = await restServer.GET(base,'/gametypes/',token)
       return result.gametypes
     } catch(error) {
       return { error }
@@ -82,7 +83,7 @@ const init = (host,app) => {
 
   const listAllPools = async (token) => {
     try {
-      const result = await restServer.GET('/pools/',token)
+      const result = await restServer.GET(base,'/pools/',token)
       return result.pools
     } catch(error) {
       return { error }
@@ -91,7 +92,7 @@ const init = (host,app) => {
 
   const joinPool = async (poolId,token) => {
     try {
-      const result = await restServer.PUT(`/pools/${poolId}/join`,{},token)
+      const result = await restServer.PUT(base,`/pools/${poolId}/join`,{},token)
       return result
     } catch(error) {
       return { error }
@@ -101,29 +102,29 @@ const init = (host,app) => {
 
 
   const listMyPlayers = async (token) => {
-    const result = await restServer.GET('/players/?mine',token)
+    const result = await restServer.GET(base,'/players/?mine',token)
     return result.players
   }
 
 
   const listMyPools = async (token) => {
-    const result = await restServer.GET('/pools/?mine',token)
+    const result = await restServer.GET(base,'/pools/?mine',token)
     return result.pools
   }
 
 
   const listActiveGames = async (token) => {
-    const result = await restServer.GET(`/games`,token)
+    const result = await restServer.GET(base,`/games`,token)
     return result.games //[gameId,currentGameStateId]
   }
 
   const getGameState = async (gameId,gameStateId,token) => {
-    const result = await restServer.GET(`/games/${gameId}/gamestates/${gameStateId}`,token)
+    const result = await restServer.GET(base,`/games/${gameId}/gamestates/${gameStateId}`,token)
     return result
   }
 
   const submitAction = async (gameId,gameStateId,action,token) => {
-    const result = await restServer.PUT(`/games/${gameId}/gamestates/${gameStateId}`,action,token)
+    const result = await restServer.PUT(base,`/games/${gameId}/gamestates/${gameStateId}`,action,token)
     return result
   }
 

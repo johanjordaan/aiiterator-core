@@ -43,15 +43,15 @@ app.delete('/error',(req,res)=>{
   res.status(500).json({error:'unknown db'})
 })
 
-
+const base = ''
 const restCall = require('../restCalls')
-const testRest = restCall.init('',app)
-const rest = restCall.init('')
+const testRest = restCall.init(app)
+const rest = restCall.init()
 
 describe('GET /', () => {
   it('it should TEST_GET json', async (done) => {
     const token = ''
-    const result = await testRest.GET('/',token)
+    const result = await testRest.GET(base,'/',token)
     result.should.eql({hallo:'world'})
     done()
 
@@ -60,7 +60,8 @@ describe('GET /', () => {
   it('TEST_GET/error', async (done) => {
     try {
       const token = ''
-      const result = await testRest.GET('/error',token)
+      const result = await testRest.GET(base,'/error',token)
+      console.log(result)
       done("eeee")
     } catch(err) {
       done()
@@ -71,7 +72,7 @@ describe('GET /', () => {
   it('it should GET json', async (done) => {
     nock(URL).get(uri=>true).reply(200,JSON.stringify({get:'was called'}))
     const token = ''
-    const result = await rest.GET(URL,token)
+    const result = await rest.GET(base,URL,token)
     result.should.eql({get:'was called'})
     done()
   })
@@ -81,7 +82,7 @@ describe('GET /', () => {
   it('it should convert a catch into a throw', async (done) => {
     try {
       const token = ''
-      const result = await rest.GET(URL,token)
+      const result = await rest.GET(base,URL,token)
       done("eeee")
     } catch(e) {
       done()
@@ -92,7 +93,7 @@ describe('GET /', () => {
 describe('POST /', () => {
   it('it should TEST_POST json and get it back', async (done) => {
     const token = ''
-    const result = await testRest.POST('/',{text:'this is some text'},token)
+    const result = await testRest.POST(base,'/',{text:'this is some text'},token)
     result.should.eql({text:'this is some text'})
     done()
   })
@@ -100,7 +101,7 @@ describe('POST /', () => {
   it('TEST_POST/error', async (done) => {
     try {
       const token = ''
-      const result = await testRest.POST('/error',{},token)
+      const result = await testRest.POST(base,'/error',{},token)
       done("eeee")
     } catch(err) {
       done()
@@ -112,7 +113,7 @@ describe('POST /', () => {
   it('it should POST json and get it back', async (done) => {
     nock(URL).post(uri=>true).reply(200,JSON.stringify({post:'was called'}))
     const token = ''
-    const result = await rest.POST(URL,{text:'this is some text'},token)
+    const result = await rest.POST(base,URL,{text:'this is some text'},token)
     result.should.eql({post:'was called'})
     done()
   })
@@ -120,7 +121,7 @@ describe('POST /', () => {
   it('it should convert a catch into a throw', async (done) => {
     try {
       const token = ''
-      const result = await rest.POST(URL,{text:'this is some text'},token)
+      const result = await rest.POST(base,URL,{text:'this is some text'},token)
       done("eeee")
     } catch(e) {
       done()
@@ -133,7 +134,7 @@ describe('POST /', () => {
 describe('PUT /', () => {
   it('it should PUT_TEST json and get it back', async (done) => {
     const token = ''
-    const result = await testRest.PUT('/',{text:'this is some text'},token)
+    const result = await testRest.PUT(base,'/',{text:'this is some text'},token)
     result.should.eql({text:'this is some text'})
     done()
   })
@@ -141,7 +142,7 @@ describe('PUT /', () => {
   it('TEST_PUT/error', async (done) => {
     try {
       const token = ''
-      const result = await testRest.PUT('/error',{},token)
+      const result = await testRest.PUT(base,'/error',{},token)
       done("eeee")
     } catch(err) {
       done()
@@ -151,7 +152,7 @@ describe('PUT /', () => {
 
   it('it should PUT_TEST json and get it back (Alias :ACTION_TEST)', async (done) => {
     const token = ''
-    const result = await testRest.ACTION('/',{text:'this is some text'},token)
+    const result = await testRest.ACTION(base,'/',{text:'this is some text'},token)
     result.should.eql({text:'this is some text'})
     done()
   })
@@ -159,7 +160,7 @@ describe('PUT /', () => {
   it('it should PUT json and get it back', async (done) => {
     nock(URL).put(uri=>true).reply(200,JSON.stringify({put:'was called'}))
     const token = ''
-    const result = await rest.PUT(URL,{text:'this is some text'},token)
+    const result = await rest.PUT(base,URL,{text:'this is some text'},token)
     result.should.eql({put:'was called'})
     done()
   })
@@ -167,7 +168,7 @@ describe('PUT /', () => {
   it('it should PUT json and get it back (Alias :ACTION)', async (done) => {
     nock(URL).put(uri=>true).reply(200,JSON.stringify({put:'was called'}))
     const token = ''
-    const result = await rest.ACTION(URL,{text:'this is some text'},token)
+    const result = await rest.ACTION(base,URL,{text:'this is some text'},token)
     result.should.eql({put:'was called'})
     done()
   })
@@ -175,7 +176,7 @@ describe('PUT /', () => {
   it('it should convert a catch into a throw', async (done) => {
     try {
       const token = ''
-      const result = await rest.PUT(URL,{text:'this is some text'},token)
+      const result = await rest.PUT(base,URL,{text:'this is some text'},token)
       done("eeee")
     } catch(e) {
       done()
@@ -188,7 +189,7 @@ describe('PUT /', () => {
 describe('DELETE /', () => {
   it('it should DELETE_TEST json and get some json back', async (done) => {
     const token = ''
-    const result = await testRest.DELETE('/',token)
+    const result = await testRest.DELETE(base,'/',token)
     result.should.eql({delete:'ok'})
     done()
   })
@@ -196,7 +197,7 @@ describe('DELETE /', () => {
   it('TEST_DELETE/error', async (done) => {
     try {
       const token = ''
-      const result = await testRest.DELETE('/error',token)
+      const result = await testRest.DELETE(base,'/error',token)
       done("An exception should be thrown")
     } catch(err) {
       done()
@@ -206,7 +207,7 @@ describe('DELETE /', () => {
   it('it should DELETE json and get it back ', async (done) => {
     nock(URL).delete(uri=>true).reply(200,JSON.stringify({delete:'was called'}))
     const token = ''
-    const result = await rest.DELETE(URL,{text:'this is some text'},token)
+    const result = await rest.DELETE(base,URL,{text:'this is some text'},token)
     result.should.eql({delete:'was called'})
     done()
   })

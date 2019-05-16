@@ -72,7 +72,7 @@ const DELETE = (base, url, body, token) => {
   .then(result => result.json())
 }
 
-const TEST_GET = (app,url, token) => {
+const TEST_GET = (app,base,url, token) => {
   return new Promise((resolve,reject)=>{
     request(app).get(url).set('Authorization', token).end((err,res)=>{
       if(res.status>=400) {
@@ -86,7 +86,7 @@ const TEST_GET = (app,url, token) => {
   })
 }
 
-const TEST_POST = (app,url,body,token) => {
+const TEST_POST = (app,base,url,body,token) => {
   return new Promise((resolve,reject)=>{
     request(app).post(url).set('Authorization', token).send(body).end((err,res)=>{
       if(res.status>=400) {
@@ -100,7 +100,7 @@ const TEST_POST = (app,url,body,token) => {
   })
 }
 
-const TEST_PUT = (app,url,body,token) => {
+const TEST_PUT = (app,base,url,body,token) => {
   return new Promise((resolve,reject)=>{
     request(app).put(url).set('Authorization', token).send(body).end((err,res)=>{
       if(res.status>=400) {
@@ -114,7 +114,7 @@ const TEST_PUT = (app,url,body,token) => {
   })
 }
 
-const TEST_DELETE = (app,url,token) => {
+const TEST_DELETE = (app,base,url,token) => {
   return new Promise((resolve,reject)=>{
     request(app).delete(url).set('Authorization', token).end((err,res)=>{
       if(res.status>=400) {
@@ -128,7 +128,7 @@ const TEST_DELETE = (app,url,token) => {
   })
 }
 
-const init = (base,app) => {
+const init = (app) => {
   if(app!==undefined){
     return {
       GET:_.curry(TEST_GET)(app),
@@ -140,12 +140,12 @@ const init = (base,app) => {
     }
   } else {
     return {
-      GET:_.curry(GET)(base),
-      POST:_.curry(POST)(base),
-      PUT:_.curry(PUT)(base),
-      DELETE:_.curry(DELETE)(base),
+      GET:GET,
+      POST:POST,
+      PUT:PUT,
+      DELETE:DELETE,
 
-      ACTION:_.curry(PUT)(base),
+      ACTION:PUT,
     }
   }
 }
