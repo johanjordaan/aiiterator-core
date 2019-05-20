@@ -3,13 +3,14 @@ const fs = require('fs')
 const express = require('express')
 const bodyParser = require('body-parser')
 
-const app = express()
-
-app.use(bodyParser.urlencoded({ extended: false }))
-app.use(bodyParser.json())
 
 
 const init = (config) => {
+  const app = express()
+
+  app.use(bodyParser.urlencoded({ extended: false }))
+  app.use(bodyParser.json())
+
   const router = require('./router').init(config)
 
   app.use('/', router)
@@ -18,7 +19,7 @@ const init = (config) => {
 }
 
 /* istanbul ignore next */
-const startServer = () => {
+const startServer = (app) => {
   const server = http.createServer(app);
   server.listen(6661, () => console.log('[6661]'))
 

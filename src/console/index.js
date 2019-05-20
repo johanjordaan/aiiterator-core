@@ -57,7 +57,7 @@ const loadState = () => {
   }
 }
 
-const state = loadState()
+let state = loadState()
 const commands = {
 
   cls: () => {
@@ -197,7 +197,7 @@ const commands = {
             const ggg = selection.Start(user.get('id'))
             const game = Map({id:uuidv4(),info:Map(selection.Info()),state:ggg})
             state = State.AddGame(state,game)
-            state = State.SetSelectedGame(state, game.get('id'))
+            newState = State.SetSelectedGame(state, game.get('id'))
           }
         })
     }

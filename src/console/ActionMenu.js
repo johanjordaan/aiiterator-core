@@ -55,9 +55,6 @@ const Show = (items) => {
         return Action.Create(resp.selectedItem,parameters)
       })
 
-
-
-      return {}
     })
 }
 
