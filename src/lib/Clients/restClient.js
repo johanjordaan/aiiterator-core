@@ -13,8 +13,9 @@ const GET = (base,url,token) => {
   .then(result => {
     if(result.status>=400) {
       return Promise.reject(result.status)
-    } else
-    return result
+    } else {
+      return result
+    }
   })
   .then(result => result.json())
 }
@@ -31,8 +32,9 @@ const POST = (base, url, body, token) => {
   .then(result => {
     if(result.status>=400) {
       return Promise.reject(result.status)
-    } else
-    return result
+    } else {
+      return result
+    }
   })
   .then(result => result.json())
 }
@@ -49,8 +51,9 @@ const PUT = (base, url, body, token) => {
   .then(result => {
     if(result.status>=400) {
       return Promise.reject(result.status)
-    } else
-    return result
+    } else {
+      return result
+    }
   })
   .then(result => result.json())
 }
@@ -66,8 +69,9 @@ const DELETE = (base, url, body, token) => {
   .then(result => {
     if(result.status>=400) {
       return Promise.reject(result.status)
-    } else
-    return result
+    } else {
+      return result
+    }
   })
   .then(result => result.json())
 }
