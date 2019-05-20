@@ -1,4 +1,4 @@
 module.exports = {
-  restCalls: require('./restCalls'),
+  restClient: require('./restClient'),
   serverClient: require('./serverClient'),
 }

@@ -5,10 +5,9 @@ const nock = require('nock')
 
 const Actions = require('../../Actions')
 
-const serverClient = require('../serverClient').init()
-
 const base = 'https://api.aiiterator.com'
 
+const serverClient = require('../serverClient').init(base)
 
 nock(base).post('/auth/login').times(100).reply(200,JSON.stringify({token:'xxx'}))
 nock(base).post('/auth/become').times(100).reply(200,JSON.stringify({token:'xxx'}))

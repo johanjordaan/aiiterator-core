@@ -74,7 +74,7 @@ const DELETE = (base, url, body, token) => {
 
 const TEST_GET = (app,base,url, token) => {
   return new Promise((resolve,reject)=>{
-    request(app).get(url).set('Authorization', token).end((err,res)=>{
+    request(app).get(base+url).set('Authorization', token).end((err,res)=>{
       if(res.status>=400) {
         reject(res.status)
       } else {
@@ -88,7 +88,7 @@ const TEST_GET = (app,base,url, token) => {
 
 const TEST_POST = (app,base,url,body,token) => {
   return new Promise((resolve,reject)=>{
-    request(app).post(url).set('Authorization', token).send(body).end((err,res)=>{
+    request(app).post(base+url).set('Authorization', token).send(body).end((err,res)=>{
       if(res.status>=400) {
         reject(res.status)
       } else {
@@ -102,7 +102,7 @@ const TEST_POST = (app,base,url,body,token) => {
 
 const TEST_PUT = (app,base,url,body,token) => {
   return new Promise((resolve,reject)=>{
-    request(app).put(url).set('Authorization', token).send(body).end((err,res)=>{
+    request(app).put(base+url).set('Authorization', token).send(body).end((err,res)=>{
       if(res.status>=400) {
         reject(res.status)
       } else {
@@ -116,7 +116,7 @@ const TEST_PUT = (app,base,url,body,token) => {
 
 const TEST_DELETE = (app,base,url,token) => {
   return new Promise((resolve,reject)=>{
-    request(app).delete(url).set('Authorization', token).end((err,res)=>{
+    request(app).delete(base+url).set('Authorization', token).end((err,res)=>{
       if(res.status>=400) {
         reject(res.status)
       } else {

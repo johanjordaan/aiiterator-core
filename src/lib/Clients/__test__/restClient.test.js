@@ -44,9 +44,9 @@ app.delete('/error',(req,res)=>{
 })
 
 const base = ''
-const restCall = require('../restCalls')
-const testRest = restCall.init(app)
-const rest = restCall.init()
+const restClient = require('../restClient')
+const testRest = restClient.init(app)
+const rest = restClient.init()
 
 describe('GET /', () => {
   it('it should TEST_GET json', async (done) => {
