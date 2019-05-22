@@ -61,12 +61,12 @@ const init = (host,app) => {
 
   const getGameState = async (gameId,gameStateId,token) => {
     const result = await restClient.GET(base,`/games/${gameId}/gamestates/${gameStateId}`,token)
-    return result
+    return result.gamestate
   }
 
   const submitAction = async (gameId,gameStateId,action,token) => {
     const result = await restClient.PUT(base,`/games/${gameId}/gamestates/${gameStateId}`,action,token)
-    return result
+    return result.gamestate
   }
 
   return {

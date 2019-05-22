@@ -22,9 +22,8 @@ nock(base).get('/matches/').times(100).reply(200,JSON.stringify({matches:[{},{}]
 nock(base).post('/matches/').times(100).reply(200,JSON.stringify({match:{id:'newMatch'}}))
 nock(base).put('/matches/someMatchId').times(100).reply(200,JSON.stringify({match:{id:'someMatchId'}}))
 
-nock(base).get('/games').times(100).reply(200,JSON.stringify({pools:[{id:'xxx'}]}))
-
-
+nock(base).get('/games/someGameId/gamestates/someGameStateId').times(100).reply(200,JSON.stringify({gamestate:{id:'someGameStateId'}}))
+nock(base).put('/games/someGameId/gamestates/someGameStateId').times(100).reply(200,JSON.stringify({gamestate:{id:'newGameStateId'}}))
 
 describe('serverClient',()=>{
   describe('register',()=>{
@@ -177,6 +176,42 @@ describe('serverClient',()=>{
         const match = await serverClient.joinMatch(matchId,token)
 
         expect(match.id).toBe(matchId)
+
+        done()
+      } catch(err) {
+        done(err)
+      }
+    })
+  })
+
+  describe('getGameState',()=>{
+    it('should get the specified gamestate',async (done)=>{
+      try {
+        const token  = await serverClient.loginAndBecome('sam@gmail.com','password','samPlayer')
+        const gameId = 'someGameId'
+        const gameStateId = 'someGameStateId'
+        const gameState = await serverClient.getGameState(gameId,gameStateId,token)
+
+        expect(gameState.id).toBe(gameStateId)
+
+        done()
+      } catch(err) {
+        done(err)
+      }
+    })
+  })
+
+
+  describe('submitAction',()=>{
+    it('should updateb teh gamestate',async (done)=>{
+      try {
+        const token  = await serverClient.loginAndBecome('sam@gmail.com','password','samPlayer')
+        const gameId = 'someGameId'
+        const gameStateId = 'someGameStateId'
+        const action = {}
+        const gameState = await serverClient.submitAction(gameId,gameStateId,action,token)
+
+        expect(gameState.id).toBe('newGameStateId')
 
         done()
       } catch(err) {
