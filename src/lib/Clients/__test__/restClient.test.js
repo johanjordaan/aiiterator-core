@@ -77,6 +77,16 @@ describe('GET /', () => {
     done()
   })
 
+  it('it handle errors', async (done) => {
+    try {
+      nock(URL).get(uri=>true).reply(400,JSON.stringify({get:'was called'}))
+      const token = ''
+      const result = await rest.GET(base,URL,token)
+      done("should not be called")
+    } catch(e) {
+      done()
+    }
+  })
 
 
   it('it should convert a catch into a throw', async (done) => {
@@ -117,6 +127,18 @@ describe('POST /', () => {
     result.should.eql({post:'was called'})
     done()
   })
+
+  it('it handle errors', async (done) => {
+    try {
+      nock(URL).post(uri=>true).reply(400,JSON.stringify({post:'was called'}))
+      const token = ''
+      const result = await rest.POST(base,URL,{text:'this is some text'},token)
+      done("should not be called")
+    } catch(e) {
+      done()
+    }
+  })
+
 
   it('it should convert a catch into a throw', async (done) => {
     try {
@@ -173,6 +195,18 @@ describe('PUT /', () => {
     done()
   })
 
+  it('it handle errors', async (done) => {
+    try {
+      nock(URL).put(uri=>true).reply(400,JSON.stringify({put:'was called'}))
+      const token = ''
+      const result = await rest.PUT(base,URL,{text:'this is some text'},token)
+      done("should not be called")
+    } catch(e) {
+      done()
+    }
+  })
+
+
   it('it should convert a catch into a throw', async (done) => {
     try {
       const token = ''
@@ -211,5 +245,17 @@ describe('DELETE /', () => {
     result.should.eql({delete:'was called'})
     done()
   })
+
+  it('it handle errors', async (done) => {
+    try {
+      nock(URL).delete(uri=>true).reply(400,JSON.stringify({delete:'was called'}))
+      const token = ''
+      const result = await rest.DELETE(base,URL,{text:'this is some text'},token)
+      done("should not be called")
+    } catch(e) {
+      done()
+    }
+  })
+
 
 })
