@@ -12,21 +12,16 @@ const CreateParameter = (parameterDef,selectIndexes) => {
       return _.at(parameterDef.options,selectIndexes)
     } else {
       const selectionCount = _.random(parameterDef.min,parameterDef.max)
-      const selectedIndexes = _.reduce(_.fill(new Array(selectionCount),1),(acc,val)=>{
-        let i = _.random(0,parameterDef.options.length-1)
-        let count = 0
-        if(parameterDef.allowDuplicates !== true) {
-          while(_.includes(acc,i)) {
-            i = _.random(0,parameterDef.options.length-1)
-            count=count+1
-            if(count>100) throw new Error("To many count")
-          }
-        }
 
-        acc.push(i)
-        return acc
-      },[])
-      return _.at(parameterDef.options,selectedIndexes)
+      if(parameterDef.allowDuplicates !== true) {
+        return  _.sampleSize(parameterDef.options,selectionCount)
+      } else {
+        return _.reduce(_.fill(new Array(selectionCount),1),(acc,val)=>{
+          let i = _.random(0,parameterDef.options.length-1)
+          acc.push(parameterDef.options[i])
+          return acc
+        },[])
+      }
     }
   } else if(parameterDef.type === 'Integer') {
     return rnd.rndIntBetween(parameterDef.min,parameterDef.max);

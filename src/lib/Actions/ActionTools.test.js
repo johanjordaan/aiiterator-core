@@ -1,4 +1,5 @@
 const should = require('should')
+const _ = require('lodash')
 
 const Types = require('../Types')
 const Action = require('./Action')
@@ -44,7 +45,7 @@ describe('ActionTools',()=>{
       const actions = [
         ActionTools.CreateSelectOneAction('play','position',[1,2,3]),
         ActionTools.CreateSelectOneAction('playThis','position',[3,2,1]),
-        ActionTools.CreateSelectOneAction('play','position',[1,2,3]),
+        ActionTools.CreateSelectOneAction('playSomeOther','position',[1,2,3]),
       ]
 
       ActionTools.SelectFirstActionFirstOption(actions,["play"]).should.eql({
@@ -54,8 +55,33 @@ describe('ActionTools',()=>{
         }
       })
     })
-
-
   })
+
+  describe('SelectRandomActionRandomOption',()=>{
+    it('should return null if no valid options',()=>{
+      const actions = [
+        ActionTools.CreateSelectOneAction('play','position',[1,2,3]),
+        ActionTools.CreateSelectOneAction('playThis','position',[3,2,1]),
+      ]
+
+      const selectedAction = ActionTools.SelectRandomActionRandomOption(actions,["play","playThis"])
+      expect(selectedAction).toBe(null)
+    })
+
+
+    it('should return a randomly selected action and option',()=>{
+      const actions = [
+        ActionTools.CreateSelectOneAction('play','position',[1,2,3]),
+        ActionTools.CreateSelectOneAction('playThis','position',[3,2,1]),
+        ActionTools.CreateSelectOneAction('playSomeOther','position',[1,2,3]),
+      ]
+
+      const selectedAction = ActionTools.SelectRandomActionRandomOption(actions,["play"])
+      const target = _.find(actions,(action)=>action.name=selectedAction.name)
+      expect(_.includes(target.parameterDefs.position.options,selectedAction.parameters.position[0])).toBe(true)
+
+    })
+  })
+
 
 })

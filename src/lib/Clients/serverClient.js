@@ -5,117 +5,58 @@ const init = (host,app) => {
   const restClient = require('./restClient').init(app)
 
   const register = async (email, password) => {
-    try {
-      const result = await restClient.POST(base,'/auth/register',{email,password},'')
-      return result
-    } catch(error) {
-      return { error }
-    }
+    const result = await restClient.POST(base,'/auth/register',{email,password},'')
+    return result.user
   }
 
   const login = async (email, password) => {
-    try {
-      const result = await restClient.POST(base,'/auth/login',{email,password},'')
-      return result.token
-    } catch(error) {
-      return { error }
-    }
+    const result = await restClient.POST(base,'/auth/login',{email,password},'')
+    return result.token
   }
-
-  const createPlayer = async (name, token) => {
-    try {
-      const result = await restClient.POST(base,'/players/',{name},token)
-      return result.newPlayer
-    } catch(error) {
-      return { error }
-    }
-  }
-
-  const listAllPlayers = async (token) => {
-    try {
-      const result = await restClient.GET(base,'/players/',token)
-      return result.players
-    } catch(error) {
-      return { error }
-    }
-  }
-
-
-  const become = async (playerId,token) => {
-    try {
-      const result = await restClient.POST(base,'/auth/become',{playerId},token)
-      return result.token
-    } catch(error) {
-      return { error }
-    }
-  }
-
-  const whoami = async (token) => {
-    try {
-      const result = await restClient.GET(base,'/auth/whoami',token)
-      return result
-    } catch(error) {
-      return { error }
-    }
-  }
-
-  const listAllGameServers = async (token) => {
-    try {
-      const result = await restClient.GET(base,'/gameservers/',token)
-      return result.gameservers
-    } catch(error) {
-      return { error }
-    }
-  }
-
-  const listAllGameTypes = async (token) => {
-    try {
-      const result = await restClient.GET(base,'/gametypes/',token)
-      return result.gametypes
-    } catch(error) {
-      return { error }
-    }
-  }
-
-  const loginAndBecome = async (email, password, playerId) => {
-    return await become(playerId, await login(email, password) )
-  }
-
-  const listAllPools = async (token) => {
-    try {
-      const result = await restClient.GET(base,'/pools/',token)
-      return result.pools
-    } catch(error) {
-      return { error }
-    }
-  }
-
-  const joinPool = async (poolId,token) => {
-    try {
-      const result = await restClient.PUT(base,`/pools/${poolId}/join`,{},token)
-      return result
-    } catch(error) {
-      return { error }
-    }
-  }
-
-
 
   const listMyPlayers = async (token) => {
     const result = await restClient.GET(base,'/players/?mine',token)
     return result.players
   }
 
-
-  const listMyPools = async (token) => {
-    const result = await restClient.GET(base,'/pools/?mine',token)
-    return result.pools
+  const listPlayers = async (token) => {
+    const result = await restClient.GET(base,'/players/',token)
+    return result.players
   }
 
 
-  const listActiveGames = async (token) => {
-    const result = await restClient.GET(base,`/games`,token)
-    return result.games //[gameId,currentGameStateId]
+  const createPlayer = async (name, token) => {
+    const result = await restClient.POST(base,'/players/',{name},token)
+    return result.player
+  }
+
+  const become = async (playerId, token) => {
+    const result = await restClient.POST(base,'/auth/become',{playerId},token)
+    return result.token
+  }
+
+  const whoami = async (token) => {
+    const result = await restClient.GET(base,'/auth/whoami',token)
+    return result.loggedinuser
+  }
+
+  const loginAndBecome = async (email, password, playerId) => {
+    return await become(playerId, await login(email, password) )
+  }
+
+  const listOpenMatches = async (token) => {
+    const result = await restClient.GET(base,'/matches/',token)
+    return result.matches
+  }
+
+  const createMatch = async (gameTypeId, bestof, poolId, token) => {
+    const result = await restClient.POST(base,'/matches/',{gameTypeId,bestof,poolId},token)
+    return result.match
+  }
+
+  const joinMatch = async (matchId, token) => {
+    const result = await restClient.PUT(base,`/matches/${matchId}`,{},token)
+    return result.match
   }
 
   const getGameState = async (gameId,gameStateId,token) => {
@@ -131,18 +72,16 @@ const init = (host,app) => {
   return {
     register,
     login,
-    createPlayer,
-    listAllPlayers,
+    listPlayers,
     listMyPlayers,
+    createPlayer,
     become,
-    whoami,
-    listAllGameServers,
-    listAllGameTypes,
     loginAndBecome,
-    listAllPools,
-    listMyPools,
-    joinPool,
-    listActiveGames,
+    whoami,
+
+    listOpenMatches,
+    createMatch,
+    joinMatch,
     getGameState,
     submitAction,
   }
