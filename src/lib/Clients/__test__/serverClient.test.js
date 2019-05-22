@@ -21,6 +21,8 @@ nock(base).post('/players/').times(100).reply(200,JSON.stringify({player:{id:'pl
 nock(base).get('/matches/').times(100).reply(200,JSON.stringify({matches:[{},{}]}))
 nock(base).post('/matches/').times(100).reply(200,JSON.stringify({match:{id:'newMatch'}}))
 nock(base).put('/matches/someMatchId').times(100).reply(200,JSON.stringify({match:{id:'someMatchId'}}))
+nock(base).get('/matches/someMatchId').times(100).reply(200,JSON.stringify({match:{id:'someMatchId'}}))
+
 
 nock(base).get('/games/someGameId/gamestates/someGameStateId').times(100).reply(200,JSON.stringify({gamestate:{id:'someGameStateId'}}))
 nock(base).put('/games/someGameId/gamestates/someGameStateId').times(100).reply(200,JSON.stringify({gamestate:{id:'newGameStateId'}}))
@@ -183,6 +185,23 @@ describe('serverClient',()=>{
       }
     })
   })
+
+  describe('getMatch',()=>{
+    it('should get specified matchs details',async (done)=>{
+      try {
+        const token  = await serverClient.loginAndBecome('sam@gmail.com','password','samPlayer')
+        const matchId = 'someMatchId'
+        const match = await serverClient.getMatch(matchId,token)
+
+        expect(match.id).toBe(matchId)
+
+        done()
+      } catch(err) {
+        done(err)
+      }
+    })
+  })
+
 
   describe('getGameState',()=>{
     it('should get the specified gamestate',async (done)=>{

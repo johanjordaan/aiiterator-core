@@ -59,6 +59,12 @@ const init = (host,app) => {
     return result.match
   }
 
+  const getMatch = async (matchId, token) => {
+    const result = await restClient.GET(base,`/matches/${matchId}`,token)
+    return result.match
+  }
+
+
   const getGameState = async (gameId,gameStateId,token) => {
     const result = await restClient.GET(base,`/games/${gameId}/gamestates/${gameStateId}`,token)
     return result.gamestate
@@ -82,6 +88,7 @@ const init = (host,app) => {
     listOpenMatches,
     createMatch,
     joinMatch,
+    getMatch,
     getGameState,
     submitAction,
   }
